@@ -18,9 +18,10 @@ class SubCategory(TimeStamp):
 
 class Product(TimeStamp):
     name = models.CharField(max_length=100)
-    sub_category = models.ForeignKey("SubCategory", on_delete=models.CASCADE)
-    address = models.ForeignKey("ProductAddress", on_delete=models.CASCADE)
-    expiration_date = models.ForeignKey("ExpirationDate", on_delete=models.CASCADE)
+    sub_category = models.ForeignKey('SubCategory', on_delete=models.CASCADE)
+    address = models.ForeignKey('ProductAddress', on_delete=models.CASCADE)
+    expiration_date = models.ForeignKey('ExpirationDate', on_delete=models.CASCADE)
+    tags = models.ManyToManyField('Tag', related_name = 'products', through='ProductTag')
 
     class Meta:
         db_table = 'products'
@@ -33,7 +34,7 @@ class ProductAddress(TimeStamp):
 
 class Option(TimeStamp):
     date = models.DateTimeField()
-    product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=3)
     discount_rate = models.DecimalField(max_digits=5, decimal_places=3)
@@ -50,8 +51,8 @@ class ProductImage(TimeStamp):
         db_table = 'products_images'
 
 class ProductTag(TimeStamp):
-    product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    tag = models.ForeignKey("Tag", on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    tag = models.ForeignKey('Tag', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'products_tags'

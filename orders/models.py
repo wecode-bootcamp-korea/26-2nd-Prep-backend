@@ -5,7 +5,7 @@ from products.models import Option
 from users.models import User
 
 class OrderItem(TimeStamp):
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
     option = models.ForeignKey(Option, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
 
@@ -14,7 +14,7 @@ class OrderItem(TimeStamp):
 
 class Order(TimeStamp):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.ForeignKey("OrderStatus", on_delete=models.CASCADE) 
+    status = models.ForeignKey('OrderStatus', on_delete=models.CASCADE) 
 
     class Meta:
         db_table = 'orders'
