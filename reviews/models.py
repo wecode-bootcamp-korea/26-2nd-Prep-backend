@@ -14,7 +14,7 @@ class Review(TimeStamp):
         db_table = 'reviews'
 
 class ReviewImage(TimeStamp):
-    review = models.ForeignKey("Review", on_delete=models.CASCADE)
+    review = models.ForeignKey('Review', on_delete=models.CASCADE)
     storage_path = models.CharField(max_length=100)
     image_url = models.CharField(max_length=100)
 
@@ -22,7 +22,7 @@ class ReviewImage(TimeStamp):
         db_table = 'reviews_images'
 
 class Like(TimeStamp):
-    review = models.ForeignKey("Review", on_delete=models.CASCADE)
+    review = models.ForeignKey('Review', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
