@@ -363,3 +363,5 @@ zsdoc/data
 
 # my_settings.py 추가
 my_settings.py
+csv/
+db_uploader.py

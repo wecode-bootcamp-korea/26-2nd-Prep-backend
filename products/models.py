@@ -4,7 +4,7 @@ from core.models import TimeStamp
 
 class Category(TimeStamp):
     name = models.CharField(max_length=50)
-    image_url = models.CharField(max_length=50)
+    image_url = models.CharField(max_length=500)
 
     class Meta:
         db_table = 'categories'
@@ -38,13 +38,13 @@ class Option(TimeStamp):
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=3)
     discount_rate = models.DecimalField(max_digits=5, decimal_places=3)
-    limitied_quantity = models.IntegerField(default=0)
+    limited_quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'options'
 
 class ProductImage(TimeStamp):
-    image_url = models.CharField(max_length=100)
+    image_url = models.CharField(max_length=500)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
     class Meta:
@@ -70,7 +70,7 @@ class ExpirationDate(TimeStamp):
         db_table = 'expiration_dates'
 
 class MainImage(TimeStamp):
-    image_url = models.CharField(max_length=200)
+    image_url = models.CharField(max_length=500)
 
     class Meta:
         db_table = 'main_images'
