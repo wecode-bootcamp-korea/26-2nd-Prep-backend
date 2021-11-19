@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from my_settings import ALGORITHM, DATABASES, SECRET_KEY
+from my_settings import ALGORITHM, DATABASES, SECRET_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 import pymysql
 
@@ -157,3 +157,7 @@ CORS_ALLOW_HEADERS = (
 )
 
 ALGORITHM=ALGORITHM
+
+AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID
+
+AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
