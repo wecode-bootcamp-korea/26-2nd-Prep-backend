@@ -5,37 +5,23 @@ from django.views import View
 from django.conf import settings
 
 from .models import User
+from .utils import Kakao
 
 class KakaotalkSignInView(View):
     def get(self, request):
-        try : 
-            ACCESS_TOKEN        = request.headers.get('Authorization')
-            profile_information = requests.get(
-                "https://kapi.kakao.com/v2/user/me",
-                headers = {'Authorization' : f'Bearer {ACCESS_TOKEN}'}
-            )
-
-            profile_information_json = profile_information.json()
-            print(profile_information_json)
-            profile_id               = profile_information_json["id"]
-            email                    = profile_information_json["kakao_account"]["email"] 
-            nickname                 = profile_information_json["properties"]["nickname"]
-            profile_image            = profile_information_json["kakao_account"]["profile"]["profile_image_url"]
+        try :
+            kakao      = Kakao(access_token = request.headers['Authorization'])
+            kakao_user = kakao.get_user_profile_information
 
             user, created     = User.objects.get_or_create(
-                social_id     = profile_id,
-                nickname      = nickname,
-                email         = email,
-                profile_image = profile_image)
-            siteToken         = jwt.encode({"id" : user.id}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-            
-            if created: 
-                return JsonResponse({"Token" : siteToken}, status = 201)
-            else: 
-                return JsonResponse({"Token" : siteToken}, status = 200)
-                    
-        except KeyError:
-            return JsonResponse({"message" : "This access token does not exist"}, status = 401)
+                nickname      = kakao_user['properties']['nickname'],
+                email         = kakao_user['kakao_account']['email'],
+                profile_image = kakao_user['kakao_account']['profile']['profile_image_url'],
+                defaults = {"social_id" : kakao_user['id']})
 
-        except User.DoesNotExist:
-            return JsonResponse({"message" : "Does_Not_Exist"}, status=404)
+            jwt_token         = jwt.encode({"id" : user.id}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+            return JsonResponse({"Token" : jwt_token}, status = 200)
+        
+        except KeyError:
+            return JsonResponse({"message" : "Key_Error"}, status = 401)
