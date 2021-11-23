@@ -22,6 +22,7 @@ class Product(TimeStamp):
     address = models.ForeignKey('ProductAddress', on_delete=models.CASCADE)
     expiration_date = models.ForeignKey('ExpirationDate', on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag', related_name = 'products', through='ProductTag')
+    description = models.TextField()
 
     class Meta:
         db_table = 'products'

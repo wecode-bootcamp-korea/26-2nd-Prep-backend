@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.test import Client
 
-from .models     import Category, SubCategory, Product, ProductImage, Option, ProductAddress, ExpirationDate, Tag, ProductTag, MainImage
+from .models     import Category, SubCategory, Product, ProductImage, Option, ProductAddress, ExpirationDate, Tag, ProductTag, ProductImage, MainImage
 from users.models import User
 from reviews.models import Review
 
@@ -320,3 +320,83 @@ class MainImageTest(TestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
+
+class ProductDetailTest(TestCase) : 
+    def setUp(self) : 
+        User.objects.create(id=1, social_id = 123455, nickname = 'hi', profile_image = 'asdfgh', email = 'hi@gmail.com')
+        ProductAddress.objects.create(id=1, name = '서울')
+        ExpirationDate.objects.create(id=1, name = 30 )
+        Category.objects.create(id=1, name = '아웃도어')
+        SubCategory.objects.create(id=1, name = '캠핑', category_id = 1)
+        
+        Product.objects.create(
+            id=1,
+            name = '나와 재미있게 놀자~',
+            sub_category_id = 1,
+            address_id = 1,
+            expiration_date_id = 1,
+            description = '재미있어요!'
+        )
+        ProductImage.objects.create(id=1, image_url = 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1473&q=80', product_id = 1)
+        Option.objects.create(id = 1, date = '2021-12-10', name = '참가비 1인', price = 10000, discount_rate = 30, limited_quantity = 10, product_id=1)
+        Review.objects.create(id = 1, comment="good!", star_rate=5.0, option_id = 1, user_id = 1)
+        Tag.objects.create(id=1, name='Only')
+        ProductTag.objects.create(id=1, product_id=1, tag_id=1)
+
+    def tearDown(self) :
+        User.objects.all().delete
+        Product.objects.all().delete()
+        ProductAddress.objects.all().delete()
+        ExpirationDate.objects.all().delete()
+        Category.objects.all().delete()
+        SubCategory.objects.all().delete()
+        ProductImage.objects.all().delete()
+        Option.objects.all().delete()
+        Review.objects.all().delete()
+        Tag.objects.all().delete()
+        ProductTag.objects.all().delete()
+
+
+    def test_ProductView_get_success(self) :
+        client = Client()
+        response = client.get('/products/1')
+        self.assertEqual(response.json(),
+            {
+                'message' : {   
+                    "product_info": {
+                        'name' : '나와 재미있게 놀자~',
+                        'product_image_url' : ['https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1473&q=80'],
+                        'expiration_date' : '30',  
+                        'address' : "서울",                                          
+                        'tag': ["Only"],
+                        'average_rating' : 5.0,
+                        'description' : '재미있어요!'
+                        },
+                    "option_list": [
+                        {
+                            "review_count": 1,
+                            "stars_percent": 100.0,
+                            "name": "참가비 1인",
+                            "price": 10000.0,
+                            "discounted_price": 7000.0,
+                            "date": '2021-12-10T00:00:00Z',
+                            "discount_rate": 30.0,
+                            "limited_quantity": 10,
+                            "reviews_list": [
+                                {
+                                "star_rate": 5.0,
+                                "comment": "good!"
+                                }
+                            ],
+                        },
+                    ],    
+                    }   
+                })
+        self.assertEqual(response.status_code, 200)
+
+    def test_ProductView_get_no_information_fail(self) :
+        client = Client()
+        response = client.get('/products/35')
+        self.assertEqual(response.json(),
+            {'message' : 'This device is does not exist'})
+        self.assertEqual(response.status_code, 401)
