@@ -11,7 +11,7 @@ class KakaotalkSignInView(View):
     def get(self, request):
         try :
             kakao      = Kakao(access_token = request.headers['Authorization'])
-            kakao_user = kakao.get_user_profile_information
+            kakao_user = kakao.get_user_profile_information()
 
             user, created     = User.objects.get_or_create(
                 nickname      = kakao_user['properties']['nickname'],
