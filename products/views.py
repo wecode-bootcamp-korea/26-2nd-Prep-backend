@@ -51,7 +51,7 @@ class ProductListView(View):
 
         q &= Q(discounted_price__range = (price_lower_range,price_upper_range))
 
-        products = Product.objects.select_related('address').filter(q)\
+        products = Product.objects.select_related('address')\
             .annotate(
                 best_ranking     = Avg('option__review__star_rate'),
                 review_count     = Count('option__review'),
@@ -59,6 +59,7 @@ class ProductListView(View):
                 latest_update    = F('created_at'),
                 discounted_price = F('option__price') - F('option__price') * (F('option__discount_rate')/100),
             )\
+            .filter(q)\
             .order_by(ordering)[OFFSET:OFFSET+LIMIT]\
             .prefetch_related('option_set', 'option_set__review_set')\
 

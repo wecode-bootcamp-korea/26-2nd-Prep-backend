@@ -10,9 +10,8 @@ class Kakao:
     def __init__(self,access_token) : 
         self.access_token = access_token
         self.user_information_api = "https://kapi.kakao.com/v2/user/me"
-        self.map_api = "https://kapi.kakao.com/v2/kakao-map"
 
-    @property
+    # @property
     def get_user_profile_information(self):
         response = requests.get(self.user_information_api,
             headers = {'Authorization' : f'Bearer {self.access_token}'},
@@ -23,6 +22,3 @@ class Kakao:
             raise Exception('This access_token is not authorized!!')
 
         return response.json()
-
-    def get_current_address(self, lat, long) : 
-        response = requests.get(self.map_url + f'lattitude={self.lat}&logitutde={self.log}')
