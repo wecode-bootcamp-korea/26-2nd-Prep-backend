@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from django.test import Client
 
-from .models     import Category, SubCategory, Product, ProductImage, Option, ProductAddress, ExpirationDate, Tag, ProductTag
+from .models     import Category, SubCategory, Product, ProductImage, Option, ProductAddress, ExpirationDate, Tag, ProductTag, MainImage
 from users.models import User
 from reviews.models import Review
 
@@ -287,3 +287,34 @@ class ProductTest(TestCase):
         client = Client()
         response = client.get('/asd')
         self.assertEqual(response.status_code, 404)
+
+class MainImageTest(TestCase):
+    def setUp(self):
+        mainimage_list =[
+            MainImage(id=1, image_url='aa'),
+            MainImage(id=2, image_url='bb')
+        ]
+
+        MainImage.objects.bulk_create(mainimage_list)
+
+    def tearDown(self):
+        MainImage.objects.all().delete()
+
+    def test_MainImage_get_success(self):
+        client = Client()
+        response = client.get('/mainimages')
+        self.assertEqual(response.json(),
+            {
+                'results' :[
+                    {
+                        'id' : 1,
+                        'image_url' : 'aa'
+                    },
+                    {
+                        'id' : 2,
+                        'image_url' : 'bb'
+                    }
+                ]
+            }
+        )
+        self.assertEqual(response.status_code, 200)
