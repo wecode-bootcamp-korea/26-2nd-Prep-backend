@@ -257,7 +257,8 @@ class ProductTest(TestCase):
                         'address' : '서울',
                         'tag' : ['Only']
                     }
-                ]
+                ],
+                'total_count' : 2
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -278,7 +279,8 @@ class ProductTest(TestCase):
                         'address' : '서울',
                         'tag' : ['Only']
                     }
-                ]
+                ],
+                'total_count' : 1
             }
         )
         self.assertEqual(response.status_code, 200)
