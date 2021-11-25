@@ -49,7 +49,7 @@ class ProductListView(View):
                  Q(tags__name__icontains = searching)|\
                  Q(address__name__icontains = searching)
 
-        q &= Q(discounted_price__range = (price_lower_range,price_upper_range))
+        q &= Q(discounted_price__range = (price_lower_range, price_upper_range))
 
         products = Product.objects.select_related('address')\
             .annotate(
@@ -57,12 +57,15 @@ class ProductListView(View):
                 review_count     = Count('option__review'),
                 star_rate        = Avg('option__review__star_rate'),
                 latest_update    = F('created_at'),
-                discounted_price = F('option__price') - F('option__price') * (F('option__discount_rate')/100),
+                discounted_price = F('option__price') - F('option__price') * (F('option__discount_rate')/100)
             )\
             .filter(q)\
             .order_by(ordering)[OFFSET:OFFSET+LIMIT]\
-            .prefetch_related('option_set', 'option_set__review_set')\
+            .prefetch_related('option_set', 'option_set__review_set')
 
+        total_count = Product.objects.annotate(
+                discounted_price = F('option__price') - F('option__price') * (F('option__discount_rate')/100)
+        ).filter(q).values("id").distinct().count()
 
         results = [
             {
@@ -76,7 +79,7 @@ class ProductListView(View):
                 'tag'              : [tag.name for tag in product.tags.all()]
             }for product in products]
 
-        return JsonResponse({'results':results}, status = 200)
+        return JsonResponse({'results':results, 'total_count' : total_count}, status = 200)
 
 class MainImageView(View):
     def get(self, request):

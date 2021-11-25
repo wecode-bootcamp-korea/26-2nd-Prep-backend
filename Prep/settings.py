@@ -161,3 +161,21 @@ ALGORITHM=ALGORITHM
 AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID
 
 AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
+
+LOGGING = {
+    'disable_existing_loggers': False,
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
