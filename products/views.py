@@ -2,7 +2,7 @@ from django.http      import JsonResponse
 from django.views     import View
 from django.db.models import Avg, F, Count, Q
 
-from products.models import Category, Product
+from products.models import Category, Product, MainImage
 
 
 class CategoryListView(View):
@@ -77,3 +77,16 @@ class ProductListView(View):
             }for product in products]
 
         return JsonResponse({'results':results}, status = 200)
+
+class MainImageView(View):
+    def get(self, request):
+        mainimages = MainImage.objects.all()
+
+        results=[
+            {
+                'id' : mainimage.id,
+                'image_url' : mainimage.image_url
+            }for mainimage in mainimages
+        ]
+
+        return JsonResponse({'results' : results}, status = 200)
