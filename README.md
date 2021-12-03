@@ -16,7 +16,7 @@ PREP API 메인 서비스
 
 # 🚀  TEAM_PREP
 
-- 시연 영상 
+- 시연 영상 : https://youtu.be/NUBgFwd-CiE
 - 배포한 웹사이트 
 
 ## 👫 팀원
